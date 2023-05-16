@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 
-import { color } from "../../utils/colors";
+import { colors } from "../../utils/colors";
 
 interface IButton extends PressableProps {
   title: string | React.ReactNode;
@@ -33,7 +33,7 @@ const Button = ({
           styles.button,
           pressStyle,
         ]}
-        android_ripple={{ color: color.yellow }}
+        android_ripple={{ color: colors.green }}
         {...props}
       >
         <Text style={[styles.buttonText, textStyle]}>{title}</Text>
@@ -45,25 +45,22 @@ const Button = ({
 const styles = StyleSheet.create({
   buttonContainer: {
     overflow: "hidden",
-    margin: 4,
-    borderRadius: 28,
+    borderRadius: 4,
   },
   button: {
-    backgroundColor: Platform.select({
-      android: color.orange,
-      ios: "transparent",
-    }),
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    elevation: 2,
+    // backgroundColor: Platform.select({
+    //   android: colors.pink,
+    //   ios: "transparent",
+    // }),
+    paddingVertical: 6,
+    paddingHorizontal: 10,
   },
   buttonText: {
     color: Platform.select({
-      android: color.darkGray,
-      ios: color.orange,
+      android: colors.black,
+      ios: colors.white,
     }),
-    textTransform: "uppercase",
-    fontFamily: "Inter-SemiBold",
+    fontWeight: "500",
     textAlign: "center",
   },
   rippleIOS: {
