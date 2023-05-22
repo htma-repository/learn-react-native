@@ -44,15 +44,17 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   buttonText: {
-    color: "white",
+    color: GlobalStyles.colors.primary50,
     textAlign: "center",
+    fontWeight: "600",
+    fontSize: 16,
   },
   flatText: {
-    color: GlobalStyles.colors.primary200,
+    color: GlobalStyles.colors.primary50,
   },
   pressed: {
     opacity: 0.75,
-    backgroundColor: GlobalStyles.colors.primary100,
+    backgroundColor: GlobalStyles.colors.primary200,
     borderRadius: 4,
   },
 });

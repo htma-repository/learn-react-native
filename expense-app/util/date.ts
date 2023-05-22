@@ -9,6 +9,6 @@ export function getDateMinusDays(date: Date, days: number) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate() - days);
 }
 
-export function newDate(date: string) {
-  return new Date(date).toISOString();
+export function newDateFormat(date: string) {
+  return date.split("T")[0];
 }

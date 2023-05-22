@@ -6,10 +6,12 @@ import { DUMMY_EXPENSES } from "../../util/dummy-expenses";
 
 interface ExpensesState {
   expenses: IDummyExpenses[];
+  editData: IDummyExpenses | null;
 }
 
 const initialState: ExpensesState = {
   expenses: DUMMY_EXPENSES,
+  editData: null,
 };
 
 export const expensesSlice = createSlice({
@@ -36,10 +38,13 @@ export const expensesSlice = createSlice({
         ...action.payload,
       };
     },
+    addExpenseToEdit: (state, action: PayloadAction<IDummyExpenses>) => {
+      state.editData = action.payload;
+    },
   },
 });
 
-export const { addExpense, deleteExpense, updateExpense } =
+export const { addExpense, deleteExpense, updateExpense, addExpenseToEdit } =
   expensesSlice.actions;
 
 export default expensesSlice.reducer;

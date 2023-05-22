@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { GlobalStyles } from "../../constants/styles";
 import { getFormattedDate } from "../../util/date";
 import { TManageExpenseScreenNavigationProp } from "../../types/types";
+import { useAppDispatch } from "../../hooks/useRedux";
+import { addExpenseToEdit } from "../../store/redux/expensesSlice";
 
 interface IExpenseItemProps {
   id?: string;
@@ -14,11 +16,13 @@ interface IExpenseItemProps {
 
 function ExpenseItem({ id, description, amount, date }: IExpenseItemProps) {
   const navigation = useNavigation<TManageExpenseScreenNavigationProp>();
+  const dispatch = useAppDispatch();
 
   function expensePressHandler() {
     navigation.navigate("ManageExpense", {
       expenseId: id as string,
     });
+    dispatch(addExpenseToEdit({ description, amount, date, id }));
   }
 
   return (
@@ -34,7 +38,7 @@ function ExpenseItem({ id, description, amount, date }: IExpenseItemProps) {
           <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
         </View>
         <View style={styles.amountContainer}>
-          <Text style={styles.amount}>{amount.toFixed(2)}</Text>
+          <Text style={styles.amount}>${amount.toFixed(2)}</Text>
         </View>
       </View>
     </Pressable>
