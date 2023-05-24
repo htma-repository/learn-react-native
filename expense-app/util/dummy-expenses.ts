@@ -1,7 +1,7 @@
-import { IDummyExpenses } from "../types/types";
+import { IExpenses } from "../types/types";
 import { newDateFormat } from "./date";
 
-export const DUMMY_EXPENSES: IDummyExpenses[] = [
+export const DUMMY_EXPENSES: IExpenses[] = [
   {
     id: "e1",
     description: "A pair of shoes",

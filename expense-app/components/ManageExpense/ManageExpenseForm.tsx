@@ -5,14 +5,21 @@ import DatePicker from "react-native-date-picker";
 import Button from "../UI/Button";
 import Input from "../UI/Input";
 import ExpenseDate from "./ExpenseDate";
-import { IDummyExpenses } from "../../types/types";
+import { IExpenses } from "../../types/types";
 import { useAppSelector } from "../../hooks/useRedux";
 import { GlobalStyles } from "../../constants/styles";
+import Loading from "../UI/Loading";
 
 interface IManageExpenseFormProps {
   onCancel: () => void;
-  onSubmit: (expenseData: IDummyExpenses) => void;
+  onSubmit: (expenseData: IExpenses) => void;
   isEditing: boolean;
+}
+
+interface IExpenseState {
+  amount: { value: string; isValid: boolean };
+  date: { value: Date; isValid: boolean };
+  description: { value: string; isValid: boolean };
 }
 
 export default function ManageExpenseForm({
@@ -21,51 +28,41 @@ export default function ManageExpenseForm({
   isEditing,
 }: IManageExpenseFormProps) {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [dateInput, setDateInput] = useState<Date>(new Date());
-  const [descInput, setDescInput] = useState<string>("");
-  const [amountInput, setAmountInput] = useState<string>("");
+  const [expenseInput, setExpenseInput] = useState<IExpenseState>({
+    amount: { value: "", isValid: true },
+    date: { value: new Date(), isValid: true },
+    description: { value: "", isValid: true },
+  });
 
-  // const [expenseInput, setExpenseInput] = useState<{
-  //   amount: { value: string; isValid: boolean };
-  //   date: { value: Date; isValid: boolean };
-  //   description: { value: string; isValid: boolean };
-  // }>({
-  //   amount: { value: "", isValid: true },
-  //   date: { value: new Date(), isValid: true },
-  //   description: { value: "", isValid: true },
-  // });
-
-  const editData = useAppSelector((state) => state.expenses.editData);
+  const { editData, loading } = useAppSelector((state) => state.expenses);
 
   useEffect(() => {
     if (isEditing) {
-      setDateInput(new Date(editData?.date as string));
-      setDescInput(editData?.description as string);
-      setAmountInput(editData?.amount.toString() as string);
-      // setExpenseInput((prevState) => ({
-      //   ...prevState,
-      //   date: {
-      //     value: new Date(editData?.date as string),
-      //     isValid: true,
-      //   },
-      //   description: { value: editData?.description as string, isValid: true },
-      //   amount: { value: editData?.amount.toString() as string, isValid: true },
-      // }));
+      setExpenseInput((prevState) => ({
+        ...prevState,
+        date: {
+          value: new Date(editData?.date as string),
+          isValid: true,
+        },
+        description: { value: editData?.description as string, isValid: true },
+        amount: { value: editData?.amount.toString() as string, isValid: true },
+      }));
     }
   }, [isEditing, editData]);
 
-  const dateInputHandler = (date: Date) => {
-    setDateInput(date);
+  const expenseInputHandler = (
+    identifier: string,
+    formInput: string | Date
+  ) => {
+    setExpenseInput((prevSate) => ({
+      ...prevSate,
+      [identifier]: {
+        value: typeof formInput === "string" ? formInput : new Date(formInput),
+        isValid: true,
+      },
+    }));
     setIsDatePickerVisible(false);
   };
-
-  // const expenseInputHandler = (
-  //   identifier: string,
-  //   textInput: string | Date
-  // ) => {
-  //   setExpenseInput((prevSate) => ({ ...prevSate, [identifier]: textInput }));
-  //   setIsDatePickerVisible(false);
-  // };
 
   const showDatePickerHandler = () => {
     setIsDatePickerVisible(true);
@@ -75,97 +72,95 @@ export default function ManageExpenseForm({
     setIsDatePickerVisible(false);
   };
 
-  const descInputHandler = (text: string) => {
-    setDescInput(text);
-  };
-
-  const amountInputHandler = (text: string) => {
-    setAmountInput(text);
-  };
-
   const confirmAddInputHandler = () => {
     const expenseData = {
-      amount: Number(amountInput),
-      date: dateInput.toISOString(),
-      description: descInput,
+      amount: Number(expenseInput.amount.value),
+      date: expenseInput.date.value.toISOString(),
+      description: expenseInput.description.value,
     };
 
-    // const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
-    // const dateIsValid = expenseData.date !== "Invalid Date";
-    // const descIsValid = expenseData.description.trim().length > 0;
+    const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
+    const dateIsValid = expenseData.date !== "Invalid Date";
+    const descIsValid = expenseData.description.trim().length > 0;
 
-    // if (!amountIsValid || !dateIsValid || !descIsValid) {
-    //   // setExpenseInput((prevState) => ({
-    //   //   amount: { value: prevState.amount.value, isValid: amountIsValid },
-    //   //   date: { value: prevState.date.value, isValid: dateIsValid },
-    //   //   description: {
-    //   //     value: prevState.description.value,
-    //   //     isValid: descIsValid,
-    //   //   },
-    //   // }));
-    //   return;
-    // }
+    if (!amountIsValid || !dateIsValid || !descIsValid) {
+      setExpenseInput((prevState) => ({
+        amount: { ...prevState.amount, isValid: amountIsValid },
+        date: { ...prevState.date, isValid: dateIsValid },
+        description: { ...prevState.description, isValid: descIsValid },
+      }));
+      return;
+    }
 
     onSubmit(expenseData);
   };
 
-  // const formIsValid =
-  //   !expenseInput.amount.isValid ||
-  //   !expenseInput.date.isValid ||
-  //   !expenseInput.description.isValid;
+  const formIsInvalid =
+    !expenseInput.amount.isValid ||
+    !expenseInput.date.isValid ||
+    !expenseInput.description.isValid;
 
   return (
-    <View style={styles.formContainer}>
-      <Text style={styles.titleText}>Your Expense</Text>
-      <View style={styles.inputRow}>
-        <Input
-          inputLabel="Amount"
-          keyboardType="decimal-pad"
-          maxLength={15}
-          onChangeText={amountInputHandler}
-          value={amountInput}
-          style={styles.inputRowChildren}
-        />
-        <View style={[styles.inputRowChildren, styles.dateInputContainer]}>
-          <ExpenseDate
-            dateInput={dateInput}
-            onChangeDate={showDatePickerHandler}
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <View style={styles.formContainer}>
+          <Text style={styles.titleText}>Your Expense</Text>
+          <View style={styles.inputRow}>
+            <Input
+              inputLabel="Amount"
+              keyboardType="decimal-pad"
+              maxLength={15}
+              onChangeText={expenseInputHandler.bind(null, "amount")}
+              value={expenseInput.amount.value}
+              style={styles.inputRowChildren}
+              invalid={!expenseInput.amount.isValid}
+            />
+            <View style={[styles.inputRowChildren, styles.dateInputContainer]}>
+              <ExpenseDate
+                dateInput={expenseInput.date.value}
+                onChangeDate={showDatePickerHandler}
+              />
+              <DatePicker
+                modal
+                open={isDatePickerVisible}
+                date={expenseInput.date.value}
+                mode="date"
+                onConfirm={expenseInputHandler.bind(null, "date")}
+                onCancel={cancelDateInputHandler}
+              />
+            </View>
+          </View>
+          <Input
+            inputLabel="Description"
+            keyboardType="default"
+            maxLength={150}
+            onChangeText={expenseInputHandler.bind(null, "description")}
+            value={expenseInput.description.value}
+            invalid={!expenseInput.description.isValid}
+            multiline
           />
-          <DatePicker
-            modal
-            open={isDatePickerVisible}
-            date={dateInput}
-            mode="date"
-            onConfirm={dateInputHandler}
-            onCancel={cancelDateInputHandler}
-          />
+          {formIsInvalid && (
+            <Text style={styles.invalidText}>Please Input Correctly!</Text>
+          )}
+          <View style={styles.buttons}>
+            <Button style={styles.button} mode="flat" onPress={onCancel}>
+              Cancel
+            </Button>
+            <Button style={styles.button} onPress={confirmAddInputHandler}>
+              {isEditing ? "Update" : "Add"}
+            </Button>
+          </View>
         </View>
-      </View>
-      <Input
-        inputLabel="Description"
-        keyboardType="default"
-        maxLength={150}
-        onChangeText={descInputHandler}
-        value={descInput}
-        multiline
-        // numberOfLines={3}
-      />
-      <View style={styles.buttons}>
-        <Button style={styles.button} mode="flat" onPress={onCancel}>
-          Cancel
-        </Button>
-        <Button style={styles.button} onPress={confirmAddInputHandler}>
-          {isEditing ? "Update" : "Add"}
-        </Button>
-      </View>
-    </View>
+      )}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   formContainer: {
     rowGap: 16,
-    // marginTop: 40,
   },
   buttons: {
     flexDirection: "row",
@@ -194,5 +189,10 @@ const styles = StyleSheet.create({
     marginVertical: 24,
     textAlign: "center",
     color: GlobalStyles.colors.primary50,
+  },
+  invalidText: {
+    color: GlobalStyles.colors.error500,
+    textAlign: "center",
+    margin: 8,
   },
 });

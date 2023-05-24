@@ -2,10 +2,10 @@ import { FlatList } from "react-native";
 
 import ExpenseItem from "./ExpenseItem";
 
-import { IDummyExpenses } from "../../types/types";
+import { IExpenses } from "../../types/types";
 
 interface IExpensesListProps {
-  expenses: IDummyExpenses[];
+  expenses: IExpenses[];
 }
 
 function ExpensesList({ expenses }: IExpensesListProps) {

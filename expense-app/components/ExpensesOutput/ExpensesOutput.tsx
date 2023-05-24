@@ -3,10 +3,10 @@ import { StyleSheet, Text, View } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 import ExpensesList from "./ExpensesList";
 import ExpensesSummary from "./ExpensesSummary";
-import { IDummyExpenses } from "../../types/types";
+import { IExpenses } from "../../types/types";
 
 interface IExpensesOutputProps {
-  expenses: IDummyExpenses[];
+  expenses: IExpenses[];
   expensesPeriod: string;
   fallbackText: string;
 }

@@ -3,11 +3,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider } from "react-redux";
 
+// import ExpensesContextProvider from "./store/context/expenses-context";
 import ExpensesBottomTabs from "./components/UI/ExpensesBottomTabs";
 import ManageExpense from "./screens/ManageExpense";
 import { GlobalStyles } from "./constants/styles";
 import { store } from "./store/redux/store";
-// import ExpensesContextProvider from "./store/context/expenses-context";
 import { RootStackParamList } from "./types/types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

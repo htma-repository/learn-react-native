@@ -1,7 +1,7 @@
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-export interface IDummyExpenses {
+export interface IExpenses {
   id?: string;
   description: string;
   amount: number;

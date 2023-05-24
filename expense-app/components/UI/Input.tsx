@@ -12,22 +12,27 @@ import { GlobalStyles } from "../../constants/styles";
 
 interface IInputProps extends TextInputProps {
   inputLabel: string;
+  invalid: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
 export default function Input({
   inputLabel,
   style,
+  invalid,
   ...textInputProps
 }: IInputProps) {
   return (
     <View style={[styles.inputContainer, style]}>
-      <Text style={styles.labelText}>{inputLabel} :</Text>
+      <Text style={[styles.labelText, invalid && styles.invalidText]}>
+        {inputLabel} :
+      </Text>
       <TextInput
         {...textInputProps}
         style={[
           styles.textInput,
           textInputProps.multiline && styles.inputMultiLine,
+          invalid && styles.invalidForm,
         ]}
       />
     </View>
@@ -53,5 +58,11 @@ const styles = StyleSheet.create({
   inputMultiLine: {
     minHeight: 125,
     textAlignVertical: "top",
+  },
+  invalidText: {
+    color: GlobalStyles.colors.error500,
+  },
+  invalidForm: {
+    backgroundColor: GlobalStyles.colors.error50,
   },
 });

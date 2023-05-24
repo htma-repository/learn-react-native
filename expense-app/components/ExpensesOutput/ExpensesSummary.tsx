@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
 
 import { GlobalStyles } from "../../constants/styles";
-import { IDummyExpenses } from "../../types/types";
+import { IExpenses } from "../../types/types";
 
 interface IExpensesSummaryProps {
-  expenses: IDummyExpenses[];
+  expenses: IExpenses[];
   periodName: string;
 }
 

@@ -2,19 +2,23 @@ import { useLayoutEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 
+// import { ExpensesContext } from "../store/context/expenses-context";
 import IconButton from "../components/UI/IconButton";
 import ManageExpenseForm from "../components/ManageExpense/ManageExpenseForm";
 import { GlobalStyles } from "../constants/styles";
-import { newDateFormat } from "../util/date";
-// import { ExpensesContext } from "../store/context/expenses-context";
-import { useAppDispatch } from "../hooks/useRedux";
+import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import {
   addExpense,
   updateExpense,
   deleteExpense,
+  addExpenses,
+  removeExpenses,
+  updateExpenses,
 } from "../store/redux/expensesSlice";
+import Loading from "../components/UI/Loading";
+
 import {
-  IDummyExpenses,
+  IExpenses,
   TManageExpenseScreenNavigationProp,
   TManageExpenseScreenRouteProp,
 } from "../types/types";
@@ -22,9 +26,11 @@ import {
 function ManageExpense() {
   // const expensesCtx = useContext(ExpensesContext);
 
+  const { loading } = useAppSelector((state) => state.expenses);
   const dispatch = useAppDispatch();
   const route = useRoute<TManageExpenseScreenRouteProp>();
   const navigation = useNavigation<TManageExpenseScreenNavigationProp>();
+  // const [postExpense, { isLoading, data }] = useAddExpenseMutation();
 
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
@@ -38,6 +44,7 @@ function ManageExpense() {
   function deleteExpenseHandler() {
     // expensesCtx.deleteExpense(editedExpenseId);
     dispatch(deleteExpense({ id: editedExpenseId }));
+    dispatch(removeExpenses(editedExpenseId));
     navigation.goBack();
   }
 
@@ -45,34 +52,48 @@ function ManageExpense() {
     navigation.goBack();
   }
 
-  function submitHandler(expenseData: IDummyExpenses) {
+  function submitHandler(expenseData: IExpenses) {
     if (isEditing) {
       // expensesCtx.updateExpense(editedExpenseId, {
       //   description: "Test!!!!",
       //   amount: 29.99,
       //   date: new Date("2022-05-20"),
       // });
+
       dispatch(
         updateExpense({
           ...expenseData,
           id: editedExpenseId,
-          date: newDateFormat(expenseData.date),
+          date: expenseData.date,
+        })
+      );
+
+      dispatch(
+        updateExpenses({
+          id: editedExpenseId,
+          expense: expenseData,
         })
       );
     } else {
+      dispatch(addExpense(expenseData));
+      dispatch(addExpenses(expenseData));
+
       // expensesCtx.addExpense({
       //   description: "Test",
       //   amount: 19.99,
       //   date: new Date("2022-05-19"),
       // });
-      dispatch(
-        addExpense({
-          ...expenseData,
-          date: newDateFormat(expenseData.date),
-        })
-      );
+
+      // try {
+      //   await postExpense({
+      //     ...expenseData,
+      //     date: newDateFormat(expenseData.date),
+      //   });
+      // } catch (error) {
+      //   console.error("rejected", error);
+      // }
     }
-    navigation.goBack();
+    !loading && navigation.goBack();
   }
 
   return (
