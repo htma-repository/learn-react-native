@@ -1,13 +1,13 @@
 import React, { createContext, useReducer, useMemo } from "react";
 
 import { DUMMY_EXPENSES } from "../../util/dummy-expenses";
-import { IDummyExpenses } from "../../types/types";
+import { IExpenses } from "../../types/types";
 
 interface IExpensesContext {
-  expenses: IDummyExpenses[];
-  addExpense: (expenseData: IDummyExpenses) => void;
+  expenses: IExpenses[];
+  addExpense: (expenseData: IExpenses) => void;
   deleteExpense: (id: string) => void;
-  updateExpense: (id: string, expenseData: IDummyExpenses) => void;
+  updateExpense: (id: string, expenseData: IExpenses) => void;
 }
 
 interface IExpensesContextProvider {
@@ -15,8 +15,8 @@ interface IExpensesContextProvider {
 }
 
 type Action =
-  | { type: "ADD"; payload: IDummyExpenses }
-  | { type: "UPDATE"; payload: { id: string; data: IDummyExpenses } }
+  | { type: "ADD"; payload: IExpenses }
+  | { type: "UPDATE"; payload: { id: string; data: IExpenses } }
   | { type: "DELETE"; payload: string };
 
 export const ExpensesContext = createContext<IExpensesContext>(
@@ -55,7 +55,7 @@ function expensesReducer(state: typeof initialState, action: Action) {
 function ExpensesContextProvider({ children }: IExpensesContextProvider) {
   const [expensesState, dispatch] = useReducer(expensesReducer, initialState);
 
-  function addExpense(expenseData: IDummyExpenses) {
+  function addExpense(expenseData: IExpenses) {
     dispatch({ type: "ADD", payload: expenseData });
   }
 
@@ -63,7 +63,7 @@ function ExpensesContextProvider({ children }: IExpensesContextProvider) {
     dispatch({ type: "DELETE", payload: id });
   }
 
-  function updateExpense(id: string, expenseData: IDummyExpenses) {
+  function updateExpense(id: string, expenseData: IExpenses) {
     dispatch({ type: "UPDATE", payload: { id, data: expenseData } });
   }
 
