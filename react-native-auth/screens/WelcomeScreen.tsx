@@ -6,14 +6,13 @@ import IconButton from "../components/ui/IconButton";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useAuthStore } from "../store/store";
 import { WelcomeScreenNavigationProps } from "../types/types";
+import { retrieveUserStorage } from "../utils/storage";
 
 function WelcomeScreen() {
   const [messageData, setMessageData] = useState<string>("");
-  const { accessToken, unAuthHandler } = useAuthStore((state) => ({
-    accessToken: state.accessToken,
+  const { unAuthHandler } = useAuthStore((state) => ({
     unAuthHandler: state.unAuthHandler,
   }));
-  console.log({ accessToken });
 
   const axiosPrivate = useAxiosPrivate();
   const navigation = useNavigation<WelcomeScreenNavigationProps>();
@@ -27,11 +26,12 @@ function WelcomeScreen() {
     const controller = new AbortController();
 
     const fetchMessage = async () => {
+      const accessToken = await retrieveUserStorage("accessToken");
       const response = await axiosPrivate.get(
-        `/message.json?auth=${accessToken}`,
+        `/message.json?auth=${accessToken as string}`,
         { signal: controller.signal }
       );
-      console.log({ message: response.data });
+      console.log("running welcome");
       isMounted && setMessageData(response.data);
     };
 

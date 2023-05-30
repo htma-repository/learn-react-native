@@ -17,6 +17,7 @@ export default function App() {
   useEffect(() => {
     const getStorage = async () => {
       try {
+        setAppIsReady(false);
         const accessTokenStorage = await retrieveUserStorage("accessToken");
         if (accessTokenStorage) {
           retrieveStorage(accessTokenStorage);

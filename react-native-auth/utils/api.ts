@@ -5,13 +5,13 @@ import { IAuth, IFirebase, IFirebaseRefresh } from "../types/types";
 
 export const API_KEY = "AIzaSyAup3zFTCF9cDIeOYy0uY99O4qm4z5N_gY";
 
-export const refreshTokenRequest = async (refreshToken: string) => {
-  const response = await axios.post<IFirebaseRefresh>(
-    `https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,
-    { grant_type: "refresh_token", refresh_token: refreshToken }
-  );
-  return response;
-};
+// export const refreshTokenRequest = async (refreshToken: string) => {
+//   const response = await axios.post<IFirebaseRefresh>(
+//     `https://securetoken.googleapis.com/v1/token?key=${API_KEY}`,
+//     { grant_type: "refresh_token", refresh_token: refreshToken }
+//   );
+//   return response;
+// };
 
 export const signUpRequest = async (newUser: IAuth) => {
   const response = await axiosInstance.post<IFirebase>(

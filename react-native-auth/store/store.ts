@@ -1,16 +1,8 @@
 import { create } from "zustand";
 import { isAxiosError } from "axios";
 
-import {
-  signUpRequest,
-  signInRequest,
-  refreshTokenRequest,
-} from "../utils/api";
-import {
-  storeUserStorage,
-  removeUserStorage,
-  retrieveUserStorage,
-} from "../utils/storage";
+import { signUpRequest, signInRequest } from "../utils/api";
+import { storeUserStorage, removeUserStorage } from "../utils/storage";
 import { IAuth } from "../types/types";
 
 interface IAuthState {
@@ -21,7 +13,7 @@ interface IAuthState {
   accessToken: string | null;
   authHandler: (newUser: IAuth, isLogin?: boolean) => void;
   unAuthHandler: () => void;
-  refreshTokenHandler: () => Promise<string>;
+  // refreshTokenHandler: () => Promise<string>;
   retrieveStorage: (accessToken: string) => void;
 }
 
@@ -77,24 +69,24 @@ export const useAuthStore = create<IAuthState>((set, get) => ({
       isAuth: false,
     });
   },
-  refreshTokenHandler: async () => {
-    const refreshToken = await retrieveUserStorage("refreshToken");
-    const response = await refreshTokenRequest(refreshToken as string);
-    if (response.status !== 200) {
-      throw new Error("Something went wrong");
-    }
+  // refreshTokenHandler: async () => {
+  //   const refreshToken = await retrieveUserStorage("refreshToken");
+  //   const response = await refreshTokenRequest(refreshToken as string);
+  //   if (response.status !== 200) {
+  //     throw new Error("Something went wrong");
+  //   }
 
-    const newAccessToken = response.data.id_token;
-    const newRefreshToken = response.data.refresh_token;
+  //   const newAccessToken = response.data.id_token;
+  //   const newRefreshToken = response.data.refresh_token;
 
-    await storeUserStorage("accessToken", newAccessToken);
-    await storeUserStorage("refreshToken", newRefreshToken);
+  //   await storeUserStorage("accessToken", newAccessToken);
+  //   await storeUserStorage("refreshToken", newRefreshToken);
 
-    set({
-      accessToken: newAccessToken,
-    });
-    return newAccessToken;
-  },
+  //   set({
+  //     accessToken: newAccessToken,
+  //   });
+  //   return newAccessToken;
+  // },
   retrieveStorage: (accessToken) => {
     set({ accessToken: accessToken, isAuth: !!accessToken });
   },

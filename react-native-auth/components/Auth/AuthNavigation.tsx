@@ -13,8 +13,6 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function AuthNavigation() {
   const isAuth = useAuthStore((state) => state.isAuth);
 
-  console.log({ isAuth });
-
   return (
     <Stack.Navigator
       screenOptions={{

@@ -1,23 +1,20 @@
-import { shallow } from "zustand/shallow";
-
-import { axiosPrivate } from "../utils/axios";
 import { useEffect } from "react";
-import { useAuthStore } from "../store/store";
+
+// import { useAuthStore } from "../store/store";
+import { axiosPrivate } from "../utils/axios";
+import useRefreshToken from "./useRefreshToken";
+import { retrieveUserStorage } from "../utils/storage";
 
 const useAxiosPrivate = () => {
-  const { refreshTokenHandler, accessToken } = useAuthStore(
-    (state) => ({
-      refreshTokenHandler: state.refreshTokenHandler,
-      accessToken: state.accessToken,
-    }),
-    shallow
-  );
+  const refresh = useRefreshToken();
 
   useEffect(() => {
     const requestIntercept = axiosPrivate.interceptors.request.use(
-      (config) => {
+      async (config) => {
         if (!config.headers["Authorization"]) {
-          config.headers["Authorization"] = `Bearer ${accessToken}`;
+          console.log("running requestIntercept");
+          const accessToken = await retrieveUserStorage("accessToken");
+          config.headers["Authorization"] = `Bearer ${accessToken as string}`;
         }
         return config;
       },
@@ -28,9 +25,12 @@ const useAxiosPrivate = () => {
       (response) => response,
       async (error) => {
         const prevRequest = error?.config;
-        if (error?.response?.status === 401 || !prevRequest?.sent) {
+        console.log({ prevRequest });
+        if (error?.response?.status >= 400 && !prevRequest?.sent) {
+          console.log("running responseIntercept");
           prevRequest.sent = true;
-          const newAccessToken = await refreshTokenHandler();
+          const refreshToken = await retrieveUserStorage("refreshToken");
+          const newAccessToken = await refresh(refreshToken as string);
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return axiosPrivate(prevRequest);
         }
@@ -42,7 +42,7 @@ const useAxiosPrivate = () => {
       axiosPrivate.interceptors.request.eject(requestIntercept);
       axiosPrivate.interceptors.response.eject(responseIntercept);
     };
-  }, [refreshTokenHandler, accessToken]);
+  }, [refresh, retrieveUserStorage]);
 
   return axiosPrivate;
 };
