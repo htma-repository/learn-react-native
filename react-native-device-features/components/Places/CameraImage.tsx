@@ -1,15 +1,18 @@
-import { useState } from "react";
-import { View, Text, Alert, StyleSheet } from "react-native";
 // import { Camera, CameraType } from "expo-camera";
+import { useState } from "react";
+import { View, Text, Alert, StyleSheet, Image } from "react-native";
 import {
   launchCameraAsync,
   useCameraPermissions,
   PermissionStatus,
 } from "expo-image-picker";
 
-import Button from "../ui/Button";
+// import Button from "../ui/Button";
+import OutlineButton from "../ui/OutlineButton";
+import { Colors } from "../../constants/colors";
 
 export default function CameraImage() {
+  const [pickedImage, setPickedImage] = useState<string[]>([] as string[]);
   const [cameraPermissionStatus, requestPermission] = useCameraPermissions();
 
   // const [cameraType, setCameraType] = useState<CameraType>(CameraType.back);
@@ -62,17 +65,33 @@ export default function CameraImage() {
     const camera = await launchCameraAsync({
       allowsEditing: true,
       aspect: [16, 9],
-      allowsMultipleSelection: true,
-      quality: 0.5,
+      quality: 0.7,
     });
 
-    console.log({ camera });
+    const images = camera?.assets?.map((asset) => asset.uri) as string[];
+
+    setPickedImage((prevState) => [...images, ...prevState]);
+  }
+
+  let imageViewer = <Text style={styles.emptyText}>No Image picked yet</Text>;
+
+  if (pickedImage.length > 0) {
+    imageViewer = (
+      <View style={styles.imageContainer}>
+        {pickedImage.map((item) => (
+          <Image style={styles.image} source={{ uri: item }} key={item} />
+        ))}
+      </View>
+    );
   }
 
   return (
     <View style={styles.cameraContainer}>
       {/* <Camera style={styles.cameraContainer} type={cameraType} /> */}
-      <Button onPress={openCameraHandler}>Open Camera</Button>
+      {imageViewer}
+      <OutlineButton onPress={openCameraHandler} iconName="camera">
+        Open Camera
+      </OutlineButton>
     </View>
   );
 }
@@ -80,5 +99,23 @@ export default function CameraImage() {
 const styles = StyleSheet.create({
   cameraContainer: {
     flex: 1,
+  },
+  imageContainer: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    rowGap: 12,
+    marginBottom: 8,
+  },
+  image: {
+    width: "100%",
+    height: 250,
+  },
+  emptyText: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: Colors.accent500,
+    marginVertical: 16,
   },
 });

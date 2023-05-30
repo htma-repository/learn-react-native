@@ -1,7 +1,8 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 
 import PlaceItem from "./PlaceItem";
 import { Place } from "../../models/Place";
+import { Colors } from "../../constants/colors";
 
 interface IPlacesList {
   PlacesData: Place[];
@@ -10,8 +11,8 @@ interface IPlacesList {
 export default function PlacesList({ PlacesData }: IPlacesList) {
   if (!PlacesData || PlacesData.length === 0) {
     return (
-      <View>
-        <Text>Places Empty</Text>
+      <View style={styles.containerText}>
+        <Text style={styles.textEmpty}>Places Empty</Text>
       </View>
     );
   }
@@ -23,3 +24,16 @@ export default function PlacesList({ PlacesData }: IPlacesList) {
     />
   );
 }
+
+const styles = StyleSheet.create({
+  containerText: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textEmpty: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: Colors.primary50,
+  },
+});

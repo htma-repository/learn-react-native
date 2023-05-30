@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
 import CameraImage from "./CameraImage";
+import LocationPicker from "./LocationPicker";
 import Input from "../ui/Input";
 
 export default function PlaceForm() {
   const [titleInput, setTitleInput] = useState<string>("");
+
+  console.log({ titleInput });
 
   function titleInputHandler(text: string) {
     setTitleInput(text);
@@ -20,6 +23,7 @@ export default function PlaceForm() {
         style={styles.input}
       />
       <CameraImage />
+      <LocationPicker />
     </ScrollView>
   );
 }

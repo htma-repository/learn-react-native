@@ -27,9 +27,5 @@ export default function AllPlaces() {
     });
   }, []);
 
-  return (
-    <View>
-      <PlacesList PlacesData={[]} />
-    </View>
-  );
+  return <PlacesList PlacesData={[]} />;
 }
