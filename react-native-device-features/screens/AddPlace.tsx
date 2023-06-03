@@ -1,6 +1,4 @@
-import { useLayoutEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 import PlaceForm from "../components/Places/PlaceForm";
 

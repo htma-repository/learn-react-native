@@ -1,5 +1,4 @@
-import { useLayoutEffect } from "react";
-import { View } from "react-native";
+import { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import IconButton from "../components/ui/IconButton";
@@ -14,7 +13,7 @@ export default function AllPlaces() {
     navigation.navigate("AddPlace");
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     navigation.setOptions({
       headerRight: ({ tintColor }) => (
         <IconButton

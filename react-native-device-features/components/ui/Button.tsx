@@ -1,20 +1,23 @@
 import {
   Pressable,
   PressableProps,
+  StyleProp,
   StyleSheet,
   Text,
   View,
+  ViewStyle,
 } from "react-native";
 import { Colors } from "../../constants/colors";
 
 interface IButtonProps extends PressableProps {
   children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
 }
 
-function Button({ children, ...props }: IButtonProps) {
+function Button({ children, style, ...props }: IButtonProps) {
   return (
     <Pressable
-      style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.button, pressed && styles.pressed, style]}
       {...props}
     >
       <View>
@@ -29,7 +32,7 @@ export default Button;
 const styles = StyleSheet.create({
   button: {
     borderRadius: 6,
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 12,
     backgroundColor: Colors.primary500,
     elevation: 2,

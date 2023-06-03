@@ -1,4 +1,3 @@
-// import { Camera, CameraType } from "expo-camera";
 import { useState } from "react";
 import { View, Text, Alert, StyleSheet, Image } from "react-native";
 import {
@@ -7,16 +6,16 @@ import {
   PermissionStatus,
 } from "expo-image-picker";
 
-// import Button from "../ui/Button";
 import OutlineButton from "../ui/OutlineButton";
 import { Colors } from "../../constants/colors";
 
-export default function CameraImage() {
-  const [pickedImage, setPickedImage] = useState<string[]>([] as string[]);
-  const [cameraPermissionStatus, requestPermission] = useCameraPermissions();
+interface ICameraImageProps {
+  onSelectedImage: (image: string) => void;
+}
 
-  // const [cameraType, setCameraType] = useState<CameraType>(CameraType.back);
-  // const [permission, requestPermission] = Camera.useCameraPermissions();
+export default function CameraImage({ onSelectedImage }: ICameraImageProps) {
+  const [pickedImage, setPickedImage] = useState<string>("");
+  const [cameraPermissionStatus, requestPermission] = useCameraPermissions();
 
   async function verifyPermission() {
     if (cameraPermissionStatus?.status === PermissionStatus.UNDETERMINED) {
@@ -36,27 +35,6 @@ export default function CameraImage() {
     return true;
   }
 
-  // if (!permission) {
-  //   return <View />;
-  // }
-
-  // if (!permission.granted) {
-  //   return (
-  //     <View style={styles.cameraContainer}>
-  //       <Text style={{ textAlign: "center" }}>
-  //         We need your permission to show the camera
-  //       </Text>
-  //       <Button onPress={requestPermission}>grant permission</Button>
-  //     </View>
-  //   );
-  // }
-
-  // function cameraTypeToggle() {
-  //   setCameraType((current) =>
-  //     current === CameraType.back ? CameraType.front : CameraType.back
-  //   );
-  // }
-
   async function openCameraHandler() {
     const permission = await verifyPermission();
     if (!permission) {
@@ -70,7 +48,8 @@ export default function CameraImage() {
 
     const images = camera?.assets?.map((asset) => asset.uri) as string[];
 
-    setPickedImage((prevState) => [...images, ...prevState]);
+    setPickedImage(images[0]);
+    onSelectedImage(images[0]);
   }
 
   let imageViewer = <Text style={styles.emptyText}>No Image picked yet</Text>;
@@ -78,16 +57,13 @@ export default function CameraImage() {
   if (pickedImage.length > 0) {
     imageViewer = (
       <View style={styles.imageContainer}>
-        {pickedImage.map((item) => (
-          <Image style={styles.image} source={{ uri: item }} key={item} />
-        ))}
+        <Image style={styles.image} source={{ uri: pickedImage }} />
       </View>
     );
   }
 
   return (
     <View style={styles.cameraContainer}>
-      {/* <Camera style={styles.cameraContainer} type={cameraType} /> */}
       {imageViewer}
       <OutlineButton onPress={openCameraHandler} iconName="camera">
         Open Camera
@@ -99,13 +75,13 @@ export default function CameraImage() {
 const styles = StyleSheet.create({
   cameraContainer: {
     flex: 1,
+    rowGap: 16,
   },
   imageContainer: {
     flex: 1,
     width: "100%",
     height: "100%",
     rowGap: 12,
-    marginBottom: 8,
   },
   image: {
     width: "100%",
