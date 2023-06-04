@@ -5,11 +5,12 @@ export interface IMapState {
   longitude: number;
 }
 
-export interface IPlace extends IMapState {
+export interface IPlace {
   id?: string;
   title: string;
   address: string;
   image: string;
+  location: IMapState;
 }
 
 export type RootStackParamList = {

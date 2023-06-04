@@ -19,8 +19,9 @@ export default function PlacesList({ PlacesData }: IPlacesList) {
   return (
     <FlatList
       data={PlacesData}
-      keyExtractor={({ id }) => id}
+      keyExtractor={({ id }) => id as string}
       renderItem={({ item }) => <PlaceItem {...item} />}
+      style={styles.list}
     />
   );
 }
@@ -35,5 +36,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: Colors.primary50,
+  },
+  list: {
+    marginTop: 16,
+    rowGap: 8,
   },
 });

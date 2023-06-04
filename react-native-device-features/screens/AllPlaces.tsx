@@ -3,11 +3,14 @@ import { useNavigation } from "@react-navigation/native";
 
 import IconButton from "../components/ui/IconButton";
 import PlacesList from "../components/Places/PlacesList";
+import { useMaps } from "../store/context/MapContext";
 
 import { AllPlacesScreenNavigationProp } from "../types/types";
 
 export default function AllPlaces() {
   const navigation = useNavigation<AllPlacesScreenNavigationProp>();
+
+  const { places } = useMaps();
 
   function addPlaceHandler() {
     navigation.navigate("AddPlace");
@@ -26,5 +29,5 @@ export default function AllPlaces() {
     });
   }, []);
 
-  return <PlacesList PlacesData={[]} />;
+  return <PlacesList PlacesData={places} />;
 }

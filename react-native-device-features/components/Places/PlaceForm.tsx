@@ -55,8 +55,7 @@ export default function PlaceForm() {
     }
 
     addPlace({
-      latitude,
-      longitude,
+      location: { latitude, longitude },
       title: titleInput,
       address: selectedAddress,
       image: selectedImage[0],
@@ -66,7 +65,7 @@ export default function PlaceForm() {
     setSelectedImage("");
     setTitleInput("");
 
-    navigation.replace("AllPlaces");
+    navigation.navigate("AllPlaces");
   }
 
   return (

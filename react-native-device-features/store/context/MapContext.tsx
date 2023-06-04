@@ -1,6 +1,7 @@
 import { createContext, useMemo, useContext, useReducer } from "react";
 
-import { IMapState, IPlace } from "../../types/types";
+import { IMapState } from "../../types/types";
+import { Place } from "../../models/Place";
 
 interface IMapProviderProps {
   children: React.ReactNode;
@@ -8,20 +9,22 @@ interface IMapProviderProps {
 
 type LocationAction =
   | { type: "ADD_COORDINATES"; payload: IMapState }
-  | { type: "ADD_PLACE"; payload: IPlace };
+  | { type: "ADD_PLACE"; payload: Place };
 
 interface IMapContext extends IMapState {
-  places: IPlace[];
+  places: Place[];
   addLocation: (location: IMapState) => void;
-  addPlace: (place: IPlace) => void;
+  addPlace: (place: Place) => void;
+}
+
+interface IInitialState {
+  placeList: Place[];
+  coords: IMapState;
 }
 
 const MapContext = createContext<IMapContext>({} as IMapContext);
 
-const initialState: {
-  placeList: IPlace[];
-  coords: IMapState;
-} = {
+const initialState: IInitialState = {
   placeList: [],
   coords: {
     latitude: -6.21462,
@@ -29,15 +32,14 @@ const initialState: {
   },
 };
 
-function reducer(state: typeof initialState, action: LocationAction) {
+function reducer(state: IInitialState, action: LocationAction) {
   switch (action.type) {
     case "ADD_COORDINATES": {
       const newLocation = action.payload;
       return { ...state, coords: { ...newLocation } };
     }
     case "ADD_PLACE": {
-      const id = new Date().toISOString() + Math.random().toString();
-      const newPlace = { ...action.payload, id };
+      const newPlace = action.payload;
       return {
         ...state,
         placeList: [newPlace, ...state.placeList],
@@ -55,8 +57,16 @@ export default function MapProvider({ children }: IMapProviderProps) {
     dispatch({ type: "ADD_COORDINATES", payload: location });
   }
 
-  function addPlaceHandler(place: IPlace) {
-    dispatch({ type: "ADD_PLACE", payload: place });
+  function addPlaceHandler(place: Place) {
+    dispatch({
+      type: "ADD_PLACE",
+      payload: new Place(
+        place.title,
+        place.address,
+        place.image,
+        place.location
+      ),
+    });
   }
 
   const value = useMemo(() => {
