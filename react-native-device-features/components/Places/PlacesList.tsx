@@ -1,14 +1,23 @@
 import { View, Text, FlatList, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import PlaceItem from "./PlaceItem";
 import { Place } from "../../models/Place";
 import { Colors } from "../../constants/colors";
+
+import { AllPlacesScreenNavigationProp } from "../../types/types";
 
 interface IPlacesList {
   PlacesData: Place[];
 }
 
 export default function PlacesList({ PlacesData }: IPlacesList) {
+  const navigation = useNavigation<AllPlacesScreenNavigationProp>();
+
+  function viewDetailHandler(id: string) {
+    navigation.navigate("PlaceDetail", { placeId: id });
+  }
+
   if (!PlacesData || PlacesData.length === 0) {
     return (
       <View style={styles.containerText}>
@@ -16,11 +25,17 @@ export default function PlacesList({ PlacesData }: IPlacesList) {
       </View>
     );
   }
+
   return (
     <FlatList
       data={PlacesData}
       keyExtractor={({ id }) => id as string}
-      renderItem={({ item }) => <PlaceItem {...item} />}
+      renderItem={({ item }) => (
+        <PlaceItem
+          {...item}
+          onPress={viewDetailHandler.bind(null, item.id as string)}
+        />
+      )}
       style={styles.list}
     />
   );
@@ -38,7 +53,6 @@ const styles = StyleSheet.create({
     color: Colors.primary50,
   },
   list: {
-    marginTop: 16,
-    rowGap: 8,
+    margin: 16,
   },
 });

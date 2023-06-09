@@ -2,14 +2,14 @@ export class Place {
   constructor(
     public title: string,
     public address: string,
-    public image: string,
-    public location: { latitude: number; longitude: number },
+    public imageUri: string,
+    public location: { lat: number; lng: number },
     public id?: string
   ) {
-    this.id = new Date().toISOString() + Math.random().toString();
+    this.id = id;
     this.title = title;
     this.address = address;
-    this.image = image;
+    this.imageUri = imageUri;
     this.location = location;
   }
 }

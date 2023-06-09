@@ -19,10 +19,7 @@ import type { AddPlaceScreenNavigationProp } from "../../types/types";
 
 export default function LocationPicker() {
   const navigation = useNavigation<AddPlaceScreenNavigationProp>();
-  const { addLocation, latitude, longitude } = useMaps();
-
-  console.log("new coordinate", { latitude, longitude });
-
+  const { addLocation, lat, lng } = useMaps();
   const [locationPermissionInformation, requestLocationPermission] =
     useForegroundPermissions();
 
@@ -58,8 +55,8 @@ export default function LocationPicker() {
     });
 
     addLocation({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
+      lat: location.coords.latitude,
+      lng: location.coords.longitude,
     });
   }
 
@@ -71,11 +68,11 @@ export default function LocationPicker() {
     <View style={styles.locationContainer}>
       <View style={styles.locationView}>
         <LeafletView
-          mapCenterPosition={{ lat: latitude, lng: longitude }}
+          mapCenterPosition={{ lat, lng }}
           mapMarkers={[
             {
               id: "1",
-              position: { lat: latitude, lng: longitude },
+              position: { lat, lng },
               icon: "📍",
               size: [24, 24],
               animation: {

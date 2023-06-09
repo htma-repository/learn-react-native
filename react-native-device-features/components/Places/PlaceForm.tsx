@@ -9,30 +9,29 @@ import Button from "../ui/Button";
 import { Colors } from "../../constants/colors";
 import { getAddress } from "../../utils/locationApi";
 import { useMaps } from "../../store/context/MapContext";
+import { insertPlace } from "../../services/database";
 
 import type { AddPlaceScreenNavigationProp } from "../../types/types";
+import { Place } from "../../models/Place";
 
 export default function PlaceForm() {
   const [titleInput, setTitleInput] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [selectedAddress, setSelectedAddress] = useState<string>("");
 
-  const { latitude, longitude, addPlace } = useMaps();
+  const { lat, lng } = useMaps();
   const navigation = useNavigation<AddPlaceScreenNavigationProp>();
 
   useEffect(() => {
     async function getLocationAddress() {
-      const address = await getAddress({
-        latitude: latitude,
-        longitude: longitude,
-      });
+      const address = await getAddress({ lat, lng });
       if (address?.data) {
         setSelectedAddress(address?.data.data[0].label as string);
       }
     }
 
     getLocationAddress();
-  }, [latitude, longitude, getAddress]);
+  }, [lat, lng, getAddress]);
 
   function titleInputHandler(text: string) {
     setTitleInput(text);
@@ -42,10 +41,10 @@ export default function PlaceForm() {
     setSelectedImage(image);
   }
 
-  function placeFormSubmitHandler() {
+  async function placeFormSubmitHandler() {
     if (
-      !latitude ||
-      !longitude ||
+      !lat ||
+      !lng ||
       selectedAddress.length === 0 ||
       selectedImage.length === 0 ||
       titleInput.length === 0
@@ -54,12 +53,14 @@ export default function PlaceForm() {
       return;
     }
 
-    addPlace({
-      location: { latitude, longitude },
+    const place: Place = {
+      location: { lat, lng },
       title: titleInput,
       address: selectedAddress,
-      image: selectedImage[0],
-    });
+      imageUri: selectedImage,
+    };
+
+    await insertPlace(place);
 
     setSelectedAddress("");
     setSelectedImage("");

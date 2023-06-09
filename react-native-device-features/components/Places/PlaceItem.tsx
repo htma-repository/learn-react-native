@@ -1,51 +1,67 @@
-import { Pressable, View, Text, StyleSheet } from "react-native";
+import {
+  Pressable,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  PressableProps,
+} from "react-native";
 
 import { Place } from "../../models/Place";
 import { Colors } from "../../constants/colors";
 
-export default function PlaceItem({ address, location, title }: Place) {
+type IPlaceItemProps = Place & PressableProps;
+
+export default function PlaceItem({
+  title,
+  address,
+  imageUri,
+  location,
+  ...props
+}: IPlaceItemProps) {
   return (
-    <Pressable style={styles.itemContainer}>
-      <View style={styles.container}>
+    <Pressable
+      style={({ pressed }) => [pressed && styles.pressed, styles.container]}
+      android_ripple={{ color: Colors.primary200 }}
+      {...props}
+    >
+      <Image source={{ uri: imageUri }} style={styles.image} />
+      <View style={styles.titleContainer}>
         <Text style={styles.titleText}>{title}</Text>
         <Text style={styles.addressText}>{address}</Text>
-        <View style={styles.locationContainer}>
-          <Text>{location.latitude}</Text>
-          <Text>{location.longitude}</Text>
-        </View>
       </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  itemContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.accent500,
-    padding: 8,
-    marginBottom: 8,
-    marginHorizontal: 16,
-    borderRadius: 6,
-    elevation: 2,
-  },
   container: {
-    rowGap: 8,
-  },
-  locationContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    borderRadius: 4,
+    backgroundColor: Colors.primary500,
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    columnGap: 8,
+    marginBottom: 16,
+  },
+  titleContainer: {
+    flex: 2,
+    padding: 8,
+  },
+  image: {
+    flex: 1,
+    height: 125,
+    width: "25%",
+    borderTopLeftRadius: 4,
+    borderBottomLeftRadius: 4,
   },
   titleText: {
     fontSize: 22,
     fontWeight: "bold",
-    color: Colors.primary700,
-    marginVertical: 4,
+    color: Colors.gray700,
   },
-  addressText: {
-    fontSize: 16,
-    fontWeight: "400",
-    color: Colors.primary50,
+  addressText: { fontSize: 14, fontWeight: "400", color: Colors.gray700 },
+  pressed: {
+    opacity: 0.9,
   },
 });

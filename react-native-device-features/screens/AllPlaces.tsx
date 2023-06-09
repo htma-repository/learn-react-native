@@ -1,20 +1,38 @@
-import { useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useState, useEffect } from "react";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import IconButton from "../components/ui/IconButton";
 import PlacesList from "../components/Places/PlacesList";
-import { useMaps } from "../store/context/MapContext";
+
+import { fetchPlace } from "../services/database";
 
 import { AllPlacesScreenNavigationProp } from "../types/types";
+import { Place } from "../models/Place";
 
 export default function AllPlaces() {
-  const navigation = useNavigation<AllPlacesScreenNavigationProp>();
+  const [places, setPlaces] = useState<Place[]>([]);
 
-  const { places } = useMaps();
+  const navigation = useNavigation<AllPlacesScreenNavigationProp>();
+  const isFocused = useIsFocused();
 
   function addPlaceHandler() {
     navigation.navigate("AddPlace");
   }
+
+  useEffect(() => {
+    async function fetcherPlaces() {
+      try {
+        if (isFocused) {
+          const places = await fetchPlace();
+          setPlaces(places);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetcherPlaces();
+  }, [isFocused]);
 
   useEffect(() => {
     navigation.setOptions({

@@ -1,8 +1,9 @@
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RouteProp } from "@react-navigation/native";
 
 export interface IMapState {
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lng: number;
 }
 
 export interface IPlace {
@@ -16,8 +17,8 @@ export interface IPlace {
 export type RootStackParamList = {
   AllPlaces: undefined;
   AddPlace: undefined;
-  PlaceDetail: undefined;
-  Maps: undefined;
+  PlaceDetail: { placeId: string };
+  Maps: { lat: number; lng: number };
 };
 
 export type AllPlacesScreenNavigationProp = NativeStackNavigationProp<
@@ -34,3 +35,15 @@ export type MapsScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "Maps"
 >;
+
+export type PlaceDetailScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "PlaceDetail"
+>;
+
+export type PlaceDetailScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "PlaceDetail"
+>;
+
+export type MapsScreenRouteProp = RouteProp<RootStackParamList, "Maps">;

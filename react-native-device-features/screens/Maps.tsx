@@ -1,26 +1,33 @@
 import { useLayoutEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, { Marker, MapPressEvent } from "react-native-maps";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import IconButton from "../components/ui/IconButton";
 import { useMaps } from "../store/context/MapContext";
-import { MapsScreenNavigationProp } from "../types/types";
+import { MapsScreenNavigationProp, MapsScreenRouteProp } from "../types/types";
 
 export default function Maps() {
-  const { latitude, longitude, addLocation } = useMaps();
+  const { lat, lng, addLocation } = useMaps();
   const navigation = useNavigation<MapsScreenNavigationProp>();
+  const route = useRoute<MapsScreenRouteProp>();
 
-  console.log("coordinate", { latitude, longitude });
+  const initialLocationDetail = route.params && {
+    lat: route.params.lat,
+    lng: route.params.lng,
+  };
 
   const initialRegion = {
-    latitude: latitude as number,
-    longitude: longitude as number,
-    latitudeDelta: 1,
-    longitudeDelta: 1,
+    latitude: initialLocationDetail ? initialLocationDetail.lat : lat,
+    longitude: initialLocationDetail ? initialLocationDetail.lng : lng,
+    latitudeDelta: 0.5,
+    longitudeDelta: 0.5,
   };
 
   useLayoutEffect(() => {
+    if (initialLocationDetail) {
+      return;
+    }
     navigation.setOptions({
       headerRight: ({ tintColor }) => (
         <IconButton
@@ -31,18 +38,18 @@ export default function Maps() {
         />
       ),
     });
-  }, [navigation]);
+  }, [navigation, initialLocationDetail, saveLocationMapHandler]);
 
   function saveLocationMapHandler() {
     navigation.navigate("AddPlace");
   }
 
   function getMapLocationHandler(event: MapPressEvent) {
+    if (initialLocationDetail) {
+      return;
+    }
     const { latitude, longitude } = event.nativeEvent.coordinate;
-
-    console.log("running");
-
-    addLocation({ latitude, longitude });
+    addLocation({ lat: latitude, lng: longitude });
   }
 
   return (
@@ -54,8 +61,8 @@ export default function Maps() {
       >
         <Marker
           coordinate={{
-            latitude: latitude as number,
-            longitude: longitude as number,
+            latitude: lat,
+            longitude: lng,
           }}
           draggable
         />
