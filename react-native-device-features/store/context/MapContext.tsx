@@ -1,4 +1,4 @@
-import { createContext, useMemo, useContext, useState } from "react";
+import React, { createContext, useMemo, useContext, useState } from "react";
 
 import { IMapState } from "../../types/types";
 
@@ -28,7 +28,7 @@ export default function MapProvider({ children }: IMapProviderProps) {
       lng: location.lng,
       addLocation: addLocationHandler,
     };
-  }, [location, addLocationHandler]);
+  }, [location.lat, location.lng, addLocationHandler]);
 
   return <MapContext.Provider value={value}>{children}</MapContext.Provider>;
 }
