@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "334028267252",
+    "project_id": "react-native-notificatio-1bf8e",
+    "storage_bucket": "react-native-notificatio-1bf8e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334028267252:android:4fce89f685db1cf97208a1",
+        "android_client_info": {
+          "package_name": "com.hutamatr.reactnativenotification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334028267252-cnttdom6cvcg7kvc1947ebnpg5unvbjq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_T94i4xKL5JGeuNZSeAHPS2VYU2l5aEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334028267252-cnttdom6cvcg7kvc1947ebnpg5unvbjq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
